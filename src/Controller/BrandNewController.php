@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\CodePostal;
+use App\Entity\Codepostaux;
 use App\Entity\Commune;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class BrandNewController extends AbstractController
 {
     /**
@@ -22,29 +25,27 @@ class BrandNewController extends AbstractController
 
         $content = $response->getContent();
 
-        $cont = json_decode($content,true);
+        $cont = json_decode($content, true);
 
         $entityManager = $this->getDoctrine()->getManager();
 
         foreach ($cont as $key => $value) {
-            echo '<pre>';
-            echo $key." =>";
-            var_dump($value);
-            echo '</pre>';
-
-
+//
             $commune = new Commune();
-            $commune->setName($value["nom"]);
+            $commune->setNom($value["nom"]);
             $commune->setCode($value["code"]);
             $commune->setCodedepartement($value["codeDepartement"]);
             $commune->setCoderegion($value["codeRegion"]);
-            $commune->setCodepostaux($value["codePostaux"][3][0]);
+            foreach ($value["codesPostaux"] as $cp) {
+                $codePostal = new CodePostal();
+                $codePostal->setCode($cp);
+                $codePostal->setCommune($commune);
+                $commune->addCodePostal($codePostal);
+                $entityManager->persist($codePostal);
+            };
 
             $entityManager->persist($commune);
         }
-        // entité code postal > relation commune cp
-        // boucle value code postaux / liaison
-
 
         $entityManager->flush();
 
