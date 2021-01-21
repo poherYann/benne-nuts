@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affichage des communes{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste de toutes les communes</h1>
+        <ul>
+            {% for commune in communes %}
+                <li>La commune {{ commune.nom }} à comme code commune : {{ commune.code }}</li>
+                <li>Elle possède le code département : {{ commune.codedepartement }} avec comme code
+                    region {{ commune.coderegion }}</li>
+            {% for codepostal in commune.codePostals %}
+                <li>Son code postal est  : {{ codepostal.Code }}</li>
+            {% endfor %}
+                <p>---------------------------</p>
+          {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
