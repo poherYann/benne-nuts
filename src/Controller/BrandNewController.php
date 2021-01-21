@@ -60,4 +60,18 @@ class BrandNewController extends AbstractController
     {
         $this->client = $client;
     }
+    /**
+     * @Route("/showRegion", name="communes")
+     * @return Response
+     */
+    public function communeShow()
+    {
+        $repo = $this->getDoctrine()->getRepository(Commune::class);
+        $commune = $repo->findAll();
+
+        return $this->render('brand_new/commune.html.twig', [
+            'controller_name' => 'HomeController',
+            'communes' => $commune
+        ]);
+    }
 }
